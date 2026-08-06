@@ -8,9 +8,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.5
 #   kernelspec:
-#     display_name: Python (sciml-gjepa)
+#     display_name: Python 3
 #     language: python
-#     name: sciml-gjepa
+#     name: python3
 # ---
 
 # %% [markdown]
@@ -100,9 +100,13 @@ import os, subprocess, sys
 REPO = "https://github.com/zenwor/sciml26_gjepa.git"
 
 if "google.colab" in sys.modules:
-    if not os.path.isdir("sciml26_gjepa"):
-        subprocess.run(["git", "clone", "-q", REPO], check=True)
-    os.chdir("sciml26_gjepa")
+    # Safe to re-run. "am I already inside the repo?" is the test, not "does a folder called
+    # sciml26_gjepa exist here?", otherwise a second run clones the repo into itself.
+    if not os.path.isdir("gjepa"):
+        if not os.path.isdir("sciml26_gjepa"):
+            subprocess.run(["git", "clone", "-q", REPO], check=True)
+        os.chdir("sciml26_gjepa")
+
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-r", "requirements.txt"],
                    check=True)
     print("Colab setup done. Working directory:", os.getcwd())
