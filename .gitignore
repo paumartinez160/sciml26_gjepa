@@ -38,3 +38,5 @@ gjepa/baselines.py
 gjepa/experiment.py
 gjepa/train.py
 tests/test_correctness.py
+
+.DS_Store
