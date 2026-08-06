@@ -1,5 +1,32 @@
 # A Theory Introduction to Proteins for Graph-Based Learning
 
+
+## Glossary
+
+| Term | Meaning in this project |
+|---|---|
+| **Amino acid** | One of the small molecules used as building blocks of proteins. The 20 standard amino acids have different chemical properties. |
+| **Residue** | An amino acid after it has been incorporated into a protein chain. In our protein graphs, one residue is one node. |
+| **Sequence** | The ordered list of residues in a protein, usually written with one-letter amino-acid codes such as `ACDEFG`. |
+| **Protein structure / fold** | The three-dimensional shape adopted by a protein chain. Residues far apart in the sequence can be close together in the folded structure. |
+| **Wild type (WT)** | The reference, unmodified version of a protein against which a mutant is compared. |
+| **Mutation** | A change to a protein sequence. This project considers single-residue substitutions such as `E15Q`: glutamate (`E`) at position 15 is replaced by glutamine (`Q`). |
+| **Mutant / variant** | A protein sequence containing a mutation relative to the wild type. |
+| **Protein stability** | How strongly a protein favors its folded state over its unfolded state under specified conditions. |
+| **$\Delta G$ (delta G)** | The free-energy difference between the folded and unfolded states of one protein. In this project's convention, a larger $\Delta G$ means greater stability. |
+| **$\Delta\Delta G$ (delta-delta G, ddG)** | The change in stability caused by a mutation: $\Delta G_{\mathrm{mutant}}-\Delta G_{\mathrm{WT}}$. In the MegaScale data used here, a negative value means destabilisation. |
+| **Protein graph** | A representation in which residues are nodes and edges connect residues related by spatial or structural proximity. |
+| **Node / edge features** | Numerical information attached to graph nodes or edges, such as amino-acid identity, 3D distance, or sequence separation. |
+| **Embedding** | A learned vector representation that summarizes useful properties of a residue, graph region, or complete protein. |
+| **Graph neural network (GNN)** | A neural network that updates node representations by exchanging and aggregating information along graph edges. |
+| **Label / target** | The value a supervised model is trained to predict. For MegaScale examples, the target is the measured $\Delta\Delta G$. |
+| **Self-supervised learning** | Learning from patterns within the input itself rather than from human-provided labels. |
+| **Pretraining** | Training an encoder on a broad initial task—in this project, learning from unlabelled SCOP structures—before training it for stability prediction. |
+| **JEPA** | Joint-Embedding Predictive Architecture: a framework that learns by using visible context to predict the representation of hidden or masked input. |
+| **Fine-tuning** | Continuing to train a pretrained model on the labelled downstream task, here mutation-effect prediction with MegaScale. |
+| **Protein-disjoint split** | A train/validation/test division in which the same protein cannot occur in more than one split, providing a more honest test on unseen proteins. |
+
+
 Proteins are the molecular machines of life. They catalyze reactions, transport molecules, transmit signals, and build the structural framework of cells. At the most basic level, a protein is a chain of amino acids linked together in a specific order. That order, together with the surrounding environment, determines how the protein folds into a three-dimensional shape, and that shape determines its function.
 
 For machine learning, this makes proteins especially interesting: they are both biological objects and structured data. A protein can be viewed as a sequence, a 3D coordinate set, or, in our project, a graph.
@@ -11,6 +38,9 @@ Amino acids are the fundamental units of proteins. Each amino acid contains:
 - a backbone shared by all amino acids,
 - a central alpha carbon,
 - and a side chain, often called the R-group.
+
+![Amino Acid](figures/amino_acid_diagram.png)
+
 
 The side chain is what makes amino acids different from one another. Some are hydrophobic, some polar, some charged, and some are chemically special because they can form strong interactions or rigid structures. This diversity is crucial: the identity of each amino acid affects how the chain folds and how the final protein behaves.
 
@@ -25,6 +55,9 @@ Proteins are not random strings of symbols; they are shaped objects with a hiera
 - Tertiary structure: the full 3D arrangement of the chain.
 - Quaternary structure: how multiple protein chains come together.
 
+![Protein Structures](figures/structures.jpg)
+
+
 A single change in the amino acid sequence can alter the protein’s stability, its interaction partners, or even its function. This is why proteins are so sensitive to mutations.
 
 ## 3. Mutations: small changes with large effects
@@ -37,6 +70,8 @@ From a biological perspective, a mutation can affect:
 - hydrogen bonding and electrostatic interactions,
 - the stability of the folded state,
 - and the ability of the protein to bind another molecule.
+
+![Protein mutation](figures/mutaition.jpg)
 
 In our project, mutations are not just biological curiosities; they are the central supervision signal. The goal is to predict how much a mutation destabilizes a protein, often measured as a change in free energy, commonly written as $\Delta \Delta G$. A mutation that strongly destabilizes a protein may change its folding behavior or reduce its biological activity.
 
